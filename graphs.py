@@ -1,8 +1,24 @@
+import random
 
-
-#adjacentMatrix = [[0,1,0,1],[1,0,2,0],[0,2,0,0],[1,0,0,1]]
-adjacentMatrix = [[0,1,0,1,1],[1,0,1,1,0],[0,0,0,1,1],[1,0,1,0,1],[0,0,0,0,0]]
+adjacentMatrix = [[0,1,0,1],[1,0,2,0],[0,2,0,0],[1,0,0,1]]
+#adjacentMatrix = [[0,1,0,1,1],[1,0,1,1,0],[0,0,0,1,1],[1,0,1,0,1],[0,0,0,0,0]]
 matLen = len(adjacentMatrix)
+
+numtoalph = {
+    0: "A",
+    1: "B",
+    2: "C",
+    3: "D",
+    4: "E",
+    5: "F",
+    6: "G",
+    7: "H",
+    8: "I",
+    9: "J",
+    10: "K",
+    11: "L",
+    12: "M"
+}
 
 def directedDegree(adjacentMatrix):
     # outdeg
@@ -46,33 +62,66 @@ def edgeCreator(adjacentMatrix):
     for x in range(matLen):
         for y in range(matLen):
             if(adjacentMatrix[x][y]>=1):
-                vertices.append([numtoalph[x],numtoalph[y]])           
+                edges.append([numtoalph[x],numtoalph[y]])           
 
-numtoalph = {
-    0: "A",
-    1: "B",
-    2: "C",
-    3: "D",
-    4: "E",
-    5: "F",
-    6: "G",
-    7: "H",
-    8: "I",
-    9: "J",
-    10: "K",
-    11: "L",
-    12: "M"
-}
-vertices = []
+def matToList(vertices,edges):
+    adjList = dict()
+    for i in vertices:
+        adjList[i] = []
+        for j in edges:
+            if i == j[0]:
+                adjList[i].append(j[1])
+    return adjList
 
+def find_simple_paths(graph, start, end):
+    visited = set()
+    visited.add(start)
+
+    nodestack = list()
+    indexstack = list()
+    current = start
+    i = 0
+
+    while True:
+        neighbors = graph[current]
+
+        while i < len(neighbors) and neighbors[i] in visited: i += 1
+
+        if i >= len(neighbors):
+            visited.remove(current)
+            if len(nodestack) < 1: break
+            current = nodestack.pop()
+            i = indexstack.pop()
+        elif neighbors[i] == end:
+            yield nodestack + [current, end]
+            i += 1
+        else:
+            nodestack.append(current)
+            indexstack.append(i+1)
+            visited.add(neighbors[i])
+            current = neighbors[i]
+            i = 0
+
+edges = []
 edgeCreator(adjacentMatrix)
-chosenPair = ["A","D"]
-allPaths = []
-for x in vertices:
-    if x[0] == chosenPair[0]:
-        print(x)
-        for y in vertices:
-            if y[0] == x[1]:
-                print("this is y", y)
-                if y[1] == chosenPair[1]:
-                    print("this is a path")
+
+vertices = []
+for x in edges:
+    for y in x:
+        if y not in vertices:
+            vertices.append(y)
+
+adjacentList = matToList(vertices,edges)
+
+n = random.randint(0,matLen-1)
+initial,destination = edges[n]
+#initial = 'A'
+#destination = 'D'
+print(n,initial,destination)
+for path in find_simple_paths(adjacentList, initial, destination): 
+    print(path)
+for i in adjacentList:
+    print(i,adjacentList[i])
+
+
+ 
