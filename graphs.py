@@ -1,7 +1,7 @@
 import random
 
-adjacentMatrix = [[0,1,0,1],[1,0,2,0],[0,2,0,0],[1,0,0,1]]
-#adjacentMatrix = [[0,1,0,1,1],[1,0,1,1,0],[0,0,0,1,1],[1,0,1,0,1],[0,0,0,0,0]]
+#adjacentMatrix = [[0,1,0,1],[1,0,2,0],[0,2,0,0],[1,0,0,1]]
+adjacentMatrix = [[0,1,0,1,1],[1,0,1,1,0],[0,0,0,1,1],[1,0,1,0,1],[0,0,0,0,0]]
 matLen = len(adjacentMatrix)
 
 numtoalph = {
@@ -19,6 +19,39 @@ numtoalph = {
     11: "L",
     12: "M"
 }
+
+colorMap = {
+
+}
+
+def breadthFirstSearchColorInsert(visitList,graph,node):
+    visitList.append(node)
+    que.append(node)
+    while que:
+        m = que.pop()
+        if m not in colorMap:
+            colorMap[m] = 'red'
+        #print(m, end = " ")
+        for adjacent in graph[m]:
+            if adjacent not in colorMap:
+                if colorMap[m] == 'red':
+                    colorMap[adjacent] = 'blue'
+                else:
+                    colorMap[adjacent] = 'red'
+            if adjacent not in visitList:
+                visitList.append(adjacent)
+                que.append(adjacent)
+
+def isBipartite(graph):
+    for i in graph:
+        for adjacent in graph[i]:
+            if i != adjacent:
+                if(colorMap[i] != colorMap[adjacent]):
+                    print("Not a bipartite")
+                    return
+            else:
+                print("Not a bipartite")
+                return
 
 def directedDegree(adjacentMatrix):
     # outdeg
@@ -117,11 +150,25 @@ n = random.randint(0,matLen-1)
 initial,destination = edges[n]
 #initial = 'A'
 #destination = 'D'
-print(n,initial,destination)
+print("Random number between 0-vertexNumber - 1:", n,"\nChosen pair of vertices:", [initial,destination])
 for path in find_simple_paths(adjacentList, initial, destination): 
-    print(path)
+    print("Paths=",path)
+
 for i in adjacentList:
-    print(i,adjacentList[i])
+    print("Vertex:",i," -> Adjacents of vertex:",adjacentList[i])
 
+visitList = []
+que = []
 
- 
+for i in adjacentList:
+    breadthFirstSearchColorInsert(visitList,adjacentList,i)
+for i in colorMap:
+    print(i,colorMap[i])
+
+isBipartite(adjacentList)
+
+degreeArray = directedDegree(adjacentMatrix)
+print(degreeArray)
+degreeArray = indirectedDegree(adjacentMatrix, matLen)
+print(degreeArray)
+
