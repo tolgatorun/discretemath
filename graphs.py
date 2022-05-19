@@ -1,13 +1,13 @@
-from cProfile import label
-from gettext import find
 import random
+from turtle import distance
 
 #adjacentMatrix = [[0,1,0,1],[1,0,2,0],[0,2,0,0],[1,0,0,1]]
 #adjacentMatrix = [[0,1,0,1,1],[1,0,1,1,0],[0,0,0,1,1],[1,0,1,0,1],[0,0,0,0,0]]
-#adjacentMatrix = [[0,1,1,1,0],[1,0,1,0,0],[1,1,0,0,0],[1,0,0,0,1],[0,0,0,1,0]]
-adjacentMatrix = [[0,1,1,1,1],[1,0,1,0,0],[1,1,0,0,0],[1,0,0,0,1],[1,0,0,1,0]]
+#adjacentMatrix = [[0,1,1,1,0],[1,0,1,0,0],[1,1,0,0,0],[1,0,0,0,1],[0,0,0,1,0]]  #euler path
+#adjacentMatrix = [[0,1,1,1,1],[1,0,1,0,0],[1,1,0,0,0],[1,0,0,0,1],[1,0,0,1,0]] #euler cycle 
 #adjacentMatrix = [[0,0,0,0,1,1,1],[0,0,0,0,1,1,1],[0,0,0,0,1,1,1],[0,0,0,0,1,1,1],[1,1,1,1,0,0,0],[1,1,1,1,0,0,0],[1,1,1,1,0,0,0]]  #bipartite
 #adjacentMatrix = [[0,0,0,0,1,1,0,0],[0,0,0,0,0,0,1,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1],[1,0,0,0,0,0,0,0],[1,0,1,0,0,0,0,0],[0,1,0,0,0,0,0,0],[0,0,0,1,0,0,0,0]] #bipartite
+adjacentMatrix = [[0, 4, 0, 0, 0, 0, 0, 8, 0],[4, 0, 8, 0, 0, 0, 0, 11, 0],[0, 8, 0, 7, 0, 4, 0, 0, 2],[0, 0, 7, 0, 9, 14, 0, 0, 0],[0, 0, 0, 9, 0, 10, 0, 0, 0],[0, 0, 4, 14, 10, 0, 2, 0, 0],[0, 0, 0, 0, 0, 2, 0, 1, 6],[8, 11, 0, 0, 0, 0, 1, 0, 7],[0, 0, 2, 0, 0, 0, 6, 7, 0]]
 matLen = len(adjacentMatrix)
 
 numtoalph = {
@@ -183,7 +183,7 @@ def check_euler(graph, max_node):
     path = dfs(start_node, graph, visited_edge)
     print(path)
 
-
+'''
 dir_undir = '2'
 while dir_undir != '1' or dir_undir != '0':
     dir_undir = input("Enter 1 for directed 0 for indirected")
@@ -197,7 +197,7 @@ while dir_undir != '1' or dir_undir != '0':
         break
     else:
         dir_undir = input("Enter 1 for directed 0 for indirected")
-
+'''
 
 edges = []
 edgeCreator(adjacentMatrix)
@@ -231,3 +231,49 @@ for i in adjacentList:
 #    print(i,colorMap[i])
 isBipartite(adjacentList)
 check_euler(adjacentList, 11)
+def matToWeightedList(adjacentMatrix,matLen):
+    weightedList = dict()
+    for i in range(matLen):
+        weightedList[i] = []
+        for j in range(matLen):
+            if adjacentMatrix[i][j] >= 1:
+                weightedList[i].append([j,adjacentMatrix[i][j]])
+    return weightedList 
+
+weightedList = matToWeightedList(adjacentMatrix, matLen)
+
+
+    
+print(weightedList)
+def dijsktrasShortestPath(initial,destination):
+    paths = []
+    for p in find_simple_paths(adjacentList,initial,destination):
+        paths.append(p)
+    distancePaths = []     
+    for i in paths:
+        distance = 0
+        if len(i) == 2:
+            for j in weightedList[i[0]]:
+                if j[0] == i[1]:
+#                    print(j[1])
+                    distancePaths.append([i,j[1]])
+        else:
+            for j in range(len(i)-1):
+                for a in weightedList[i[j]]:
+                    if a[0] == i[j+1]:
+                        distance += a[1]
+        distancePaths.append([i,distance])
+#    for i in distancePaths:
+#        print("Path:",i[0],"\n","Distance:", i[1])
+    minDis = distancePaths[0][1]
+    minDisPath = [0,0]
+    for i in distancePaths:
+        if i[1] < minDis:
+            minDis = i[1]
+            minDisPath[0] = i[0]
+    minDisPath[1] = minDis
+    return minDisPath
+            
+minDis = dijsktrasShortestPath(1,8)
+
+print("Path:", minDis[0],'\n',"Distance:",minDis[1])
