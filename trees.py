@@ -1,5 +1,3 @@
-import queue
-
 
 graph = {
   '5' : ['3','7'],
@@ -9,11 +7,19 @@ graph = {
   '4' : ['8'],
   '8' : []
 }
+def edgeCreator(graph):
+    edges = []
+    for i in graph:
+        for j in graph[i]:
+            edges.append([i,j])
+    return edges
 
-visited = []
-queue = []
 
-def bfs(visited,graph,vertex):
+
+
+def bfs(graph,vertex):
+    visited = []
+    queue = []
     visited.append(vertex)
     queue.append(vertex)
     
@@ -25,5 +31,39 @@ def bfs(visited,graph,vertex):
                 visited.append(adjacent)
                 queue.append(adjacent)
 
+edges = edgeCreator(graph)
+def descendantFind(edges):
+    descendants = []
+    for i in edges:
+        if i[1] not in descendants:
+            descendants.append(i[1])
+    return descendants
 
-bfs(visited,graph,'5')
+descendants = descendantFind(edges)
+
+
+def vertexFind(edges):
+    vertices = []
+    for i in edges:
+        for j in i:
+            if j not in vertices:
+                vertices.append(j)
+    return vertices
+    
+vertices = vertexFind(edges)
+print("Descendants are:", descendants)
+print("Vertices are:",vertices)
+bfs(graph,'5')
+
+
+def dfs(graph,vertex):
+    visited = []
+    if vertex not in visited:
+        print(vertex)
+        visited.append(vertex)
+        for adjacent in graph[vertex]:
+            dfs(graph,adjacent)
+
+for i in vertices:
+    if i not in descendants:
+        root = i
