@@ -1,36 +1,35 @@
 import random
-from turtle import distance
-
-#adjacentMatrix = [[0,1,0,1],[1,0,2,0],[0,2,0,0],[1,0,0,1]]
-#adjacentMatrix = [[0,1,0,1,1],[1,0,1,1,0],[0,0,0,1,1],[1,0,1,0,1],[0,0,0,0,0]]
+#for using sample matrices below comment out lines between 8-24
 #adjacentMatrix = [[0,1,1,1,0],[1,0,1,0,0],[1,1,0,0,0],[1,0,0,0,1],[0,0,0,1,0]]  #euler path
 #adjacentMatrix = [[0,1,1,1,1],[1,0,1,0,0],[1,1,0,0,0],[1,0,0,0,1],[1,0,0,1,0]] #euler cycle 
 #adjacentMatrix = [[0,0,0,0,1,1,1],[0,0,0,0,1,1,1],[0,0,0,0,1,1,1],[0,0,0,0,1,1,1],[1,1,1,1,0,0,0],[1,1,1,1,0,0,0],[1,1,1,1,0,0,0]]  #bipartite
-#adjacentMatrix = [[0,0,0,0,1,1,0,0],[0,0,0,0,0,0,1,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1],[1,0,0,0,0,0,0,0],[1,0,1,0,0,0,0,0],[0,1,0,0,0,0,0,0],[0,0,0,1,0,0,0,0]] #bipartite
-adjacentMatrix = [[0, 4, 0, 0, 0, 0, 0, 8, 0],[4, 0, 8, 0, 0, 0, 0, 11, 0],[0, 8, 0, 7, 0, 4, 0, 0, 2],[0, 0, 7, 0, 9, 14, 0, 0, 0],[0, 0, 0, 9, 0, 10, 0, 0, 0],[0, 0, 4, 14, 10, 0, 2, 0, 0],[0, 0, 0, 0, 0, 2, 0, 1, 6],[8, 11, 0, 0, 0, 0, 1, 0, 7],[0, 0, 2, 0, 0, 0, 6, 7, 0]]
-matLen = len(adjacentMatrix)
+#adjacentMatrix = [[0, 4, 0, 0, 0, 0, 0, 8, 0],[4, 0, 8, 0, 0, 0, 0, 11, 0],[0, 8, 0, 7, 0, 4, 0, 0, 2],[0, 0, 7, 0, 9, 14, 0, 0, 0],[0, 0, 0, 9, 0, 10, 0, 0, 0],[0, 0, 4, 14, 10, 0, 2, 0, 0],[0, 0, 0, 0, 0, 2, 0, 1, 6],[8, 11, 0, 0, 0, 0, 1, 0, 7],[0, 0, 2, 0, 0, 0, 6, 7, 0]]
 
-numtoalph = {
-    0: "A",
-    1: "B",
-    2: "C",
-    3: "D",
-    4: "E",
-    5: "F",
-    6: "G",
-    7: "H",
-    8: "I",
-    9: "J",
-    10: "K",
-    11: "L",
-    12: "M"
-}
 
+adjacentMatrixInput = input("Please enter adjacency matrix: ")
+adjacentMatrixInput = adjacentMatrixInput.split(" ")
+sq = int(len(adjacentMatrixInput) ** 0.5)
+j = 1
+tempArr = []
+adjacentMatrix = []
+for i in adjacentMatrixInput:
+    if j % sq == 0:
+        tempArr.append(i)
+        adjacentMatrix.append(tempArr)
+        tempArr = []
+        j = 1
+    else:
+        j+=1
+        tempArr.append(i)
+
+
+
+matLen = adjacentMatrix
 colorMap = {
 
 }
 
-def breadthFirstSearchColorInsert(visitList,graph,node):
+def breadthFirstSearchColorInsert(visitList,graph,node): 
     visitList.append(node)
     que.append(node)
     while que:
@@ -111,7 +110,7 @@ def matToList(vertices,edges):
                 adjList[i].append(j[1])
     return adjList
 
-def find_simple_paths(graph, start, end):
+def findPaths(graph, start, end):
     visited = set()
     visited.add(start)
 
@@ -140,7 +139,7 @@ def find_simple_paths(graph, start, end):
             current = neighbors[i]
             i = 0
 
-def dfs(u, graph, visited_edge, path=[]):
+def dfs(u, graph, visited_edge, path=[]): #for using in check euler
     path = path + [u]
     for v in graph[u]:
         if visited_edge[u][v] == False:
@@ -183,54 +182,6 @@ def check_euler(graph, max_node):
     path = dfs(start_node, graph, visited_edge)
     print(path)
 
-'''
-dir_undir = '2'
-while dir_undir != '1' or dir_undir != '0':
-    dir_undir = input("Enter 1 for directed 0 for indirected")
-    if dir_undir == '1':
-        degreeArray = directedDegree(adjacentMatrix)
-        print(degreeArray)
-        break
-    elif dir_undir == '0':
-        degreeArray = indirectedDegree(adjacentMatrix, matLen)
-        print(degreeArray)
-        break
-    else:
-        dir_undir = input("Enter 1 for directed 0 for indirected")
-'''
-
-edges = []
-edgeCreator(adjacentMatrix)
-
-vertices = []
-for x in edges:
-    for y in x:
-        if y not in vertices:
-            vertices.append(y)
-
-adjacentList = matToList(vertices,edges)
-
-n = random.randint(0,matLen-1)
-initial,destination = edges[n]
-
-print("Random number between 0-vertexNumber - 1:", n,"\nChosen pair of vertices:", [initial,destination])
-c = 1
-for path in find_simple_paths(adjacentList, initial, destination): 
-    print("Path",c,":",path)
-    c+=1
-
-#for i in adjacentList:
-#    print("Vertex:",i," -> Adjacents of vertex:",adjacentList[i])
-
-visitList = []
-que = []
-
-for i in adjacentList:
-    breadthFirstSearchColorInsert(visitList,adjacentList,i)
-#for i in colorMap:
-#    print(i,colorMap[i])
-isBipartite(adjacentList)
-check_euler(adjacentList, 11)
 def matToWeightedList(adjacentMatrix,matLen):
     weightedList = dict()
     for i in range(matLen):
@@ -240,14 +191,9 @@ def matToWeightedList(adjacentMatrix,matLen):
                 weightedList[i].append([j,adjacentMatrix[i][j]])
     return weightedList 
 
-weightedList = matToWeightedList(adjacentMatrix, matLen)
-
-
-    
-print(weightedList)
 def dijsktrasShortestPath(initial,destination):
     paths = []
-    for p in find_simple_paths(adjacentList,initial,destination):
+    for p in findPaths(adjacentList,initial,destination):
         paths.append(p)
     distancePaths = []     
     for i in paths:
@@ -265,15 +211,66 @@ def dijsktrasShortestPath(initial,destination):
         distancePaths.append([i,distance])
 #    for i in distancePaths:
 #        print("Path:",i[0],"\n","Distance:", i[1])
-    minDis = distancePaths[0][1]
-    minDisPath = [0,0]
-    for i in distancePaths:
-        if i[1] < minDis:
-            minDis = i[1]
-            minDisPath[0] = i[0]
-    minDisPath[1] = minDis
-    return minDisPath
-            
-minDis = dijsktrasShortestPath(1,8)
+#    print(distancePaths)
+    if len(distancePaths) >= 1:
+        minDis = distancePaths[0][1]
+        minDisPath = [0,0]
+        for i in distancePaths:
+            if i[1] < minDis:
+                minDis = i[1]
+                minDisPath[0] = i[0]
+        minDisPath[1] = minDis
+        return minDisPath
+    else:
+        return ["There isn't a path between"," "]
+
+dir_undir = '2'
+while dir_undir != '1' or dir_undir != '0':
+    dir_undir = input("Enter 1 for directed 0 for indirected")
+    if dir_undir == '1':
+        degreeArray = directedDegree(adjacentMatrix)
+        print(degreeArray)
+        break
+    elif dir_undir == '0':
+        degreeArray = indirectedDegree(adjacentMatrix, matLen)
+        print(degreeArray)
+        break
+    else:
+        dir_undir = input("Enter 1 for directed 0 for indirected")
+
+
+edges = []
+edgeCreator(adjacentMatrix)
+
+vertices = []
+for x in edges:
+    for y in x:
+        if y not in vertices:
+            vertices.append(y)
+
+adjacentList = matToList(vertices,edges)
+
+n = random.randint(0,matLen-1)
+initial,destination = edges[n]
+
+print("Random number between 0-vertexNumber - 1:", n,"\nChosen pair of vertices:", [initial,destination])
+c = 1
+for path in findPaths(adjacentList, initial, destination): 
+    print("Path",c,":",path)
+    c+=1
+
+visitList = []
+que = []
+
+for i in adjacentList:
+    breadthFirstSearchColorInsert(visitList,adjacentList,i)
+
+isBipartite(adjacentList)
+check_euler(adjacentList, 11)
+
+weightedList = matToWeightedList(adjacentMatrix, matLen)
+djk = random.choices(vertices, k=2)
+
+minDis = dijsktrasShortestPath(djk[0],djk[1])
 
 print("Path:", minDis[0],'\n',"Distance:",minDis[1])
